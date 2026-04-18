@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const menuItems = [
-    { title: 'Inicio', href: '#' },
-    { title: 'Nosotros', href: '#nosotros' },
-    { title: 'Niveles', href: '#niveles' },
-    { title: 'Contacto', href: '#contacto' },
+    { title: 'Inicio', href: '/' },
+    { title: 'Nosotros', href: '/nosotros' },
+    { title: 'Niveles', href: '/niveles' },
+    { title: 'Contacto', href: '/contacto' },
   ];
 
   return (
@@ -17,24 +19,31 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo Section */}
           <div className="flex-shrink-0 flex items-center">
-            <img 
-              className="h-12 w-auto" 
-              src="assets/logo-uep-sanjose.png" 
-              alt="UEP San José Logo" 
-              onError={(e) => { e.target.src = 'https://via.placeholder.com/150x50?text=UEP+SJ'; }}
-            />
+            <Link to="/" className="flex items-center gap-2 group">
+              <img 
+                className="h-16 w-auto mix-blend-multiply bg-transparent group-hover:scale-105 transition-transform duration-300 object-contain" 
+                src="/assets/logo.png" 
+                alt="Logo UEP San José" 
+                onError={(e) => { e.target.src = 'https://via.placeholder.com/150x150?text=LOGO+SJ'; }}
+              />
+              <span className="hidden lg:block font-bold text-primary text-xl tracking-tight">UEP San José</span>
+            </Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
             {menuItems.map((item) => (
-              <a
+              <Link
                 key={item.title}
-                href={item.href}
-                className="text-primary hover:text-blue-700 font-medium transition-colors"
+                to={item.href}
+                className={`font-medium transition-colors ${
+                  location.pathname === item.href 
+                    ? 'text-blue-700 border-b-2 border-blue-700' 
+                    : 'text-primary hover:text-blue-700'
+                }`}
               >
                 {item.title}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -58,14 +67,18 @@ const Navbar = () => {
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
           {menuItems.map((item) => (
-            <a
+            <Link
               key={item.title}
-              href={item.href}
-              className="block px-3 py-4 text-primary hover:bg-blue-50 font-medium transition-colors"
+              to={item.href}
+              className={`block px-3 py-4 font-medium transition-colors ${
+                location.pathname === item.href
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-primary hover:bg-blue-50'
+              }`}
               onClick={() => setIsOpen(false)}
             >
               {item.title}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

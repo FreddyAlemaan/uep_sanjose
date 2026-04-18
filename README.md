@@ -7,7 +7,7 @@ Este repositorio contiene el código fuente del sitio web oficial de la **Unidad
 ![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)
 ![Tailwind](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css)
 
-##  Características
+## 🌟 Características
 
 - **Diseño Responsivo:** Optimizado para dispositivos móviles, tablets y computadoras de escritorio.
 - **Estética Moderna:** Paleta de colores profesional (Azul Marino y Blanco) que transmite seriedad y confianza.
@@ -18,7 +18,7 @@ Este repositorio contiene el código fuente del sitio web oficial de la **Unidad
   - **Contacto:** Información de ubicación y enlaces de interés.
 - **Navegación Fluida:** Smooth scroll entre secciones de la página.
 
-##  Tecnologías Utilizadas
+## 🛠️ Tecnologías Utilizadas
 
 - **Core:** [React 19](https://reactjs.org/)
 - **Bundler:** [Vite](https://vitejs.dev/)
@@ -26,9 +26,33 @@ Este repositorio contiene el código fuente del sitio web oficial de la **Unidad
 - **Iconos:** [Lucide React](https://lucide.dev/)
 - **Fuentes:** Inter / Roboto (configuradas vía CSS)
 
+## 🚀 Instalación y Uso
 
+Para ejecutar este proyecto de forma local, sigue estos pasos:
 
-##  Estructura del Proyecto
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/FreddyAlemaan/uep_sanjose.git
+   cd uep_sanjose
+   ```
+
+2. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
+
+3. **Ejecutar en modo desarrollo:**
+   ```bash
+   npm run dev
+   ```
+   La aplicación estará disponible en `http://localhost:5173`.
+
+4. **Construir para producción:**
+   ```bash
+   npm run build
+   ```
+
+## 📂 Estructura del Proyecto
 
 ```text
 src/
@@ -39,7 +63,7 @@ src/
 └── main.jsx        # Punto de entrada de la aplicación
 ```
 
-##  Contribuciones
+## 🤝 Contribuciones
 
 Si deseas contribuir a este proyecto:
 1. Haz un Fork del repositorio.
