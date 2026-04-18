@@ -1,16 +1,53 @@
-# React + Vite
+# UEP "San José" - Website 🏫
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio contiene el código fuente del sitio web oficial de la **Unidad Educativa Parroquial "San José"**, ubicada en La Guaira, Venezuela. Es una Single Page Application (SPA) moderna diseñada para reflejar la excelencia académica y los valores cristianos de la institución.
 
-Currently, two official plugins are available:
+![Project Preview](https://img.shields.io/badge/Status-Development-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)
+![Tailwind](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+##  Características
 
-## React Compiler
+- **Diseño Responsivo:** Optimizado para dispositivos móviles, tablets y computadoras de escritorio.
+- **Estética Moderna:** Paleta de colores profesional (Azul Marino y Blanco) que transmite seriedad y confianza.
+- **Secciones Informativas:**
+  - **Inicio (Hero):** Bienvenida visual impactante.
+  - **Nosotros:** Historia (más de 50 años) y valores institucionales.
+  - **Niveles Educativos:** Detalle de Inicial, Primaria y Media General.
+  - **Contacto:** Información de ubicación y enlaces de interés.
+- **Navegación Fluida:** Smooth scroll entre secciones de la página.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+##  Tecnologías Utilizadas
 
-## Expanding the ESLint configuration
+- **Core:** [React 19](https://reactjs.org/)
+- **Bundler:** [Vite](https://vitejs.dev/)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
+- **Iconos:** [Lucide React](https://lucide.dev/)
+- **Fuentes:** Inter / Roboto (configuradas vía CSS)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+##  Estructura del Proyecto
+
+```text
+src/
+├── assets/         # Imágenes y recursos estáticos
+├── components/     # Componentes de React (Navbar, Hero, About, etc.)
+├── App.jsx         # Componente principal
+├── index.css       # Estilos globales y Tailwind
+└── main.jsx        # Punto de entrada de la aplicación
+```
+
+##  Contribuciones
+
+Si deseas contribuir a este proyecto:
+1. Haz un Fork del repositorio.
+2. Crea una rama para tu mejora (`git checkout -b feature/NuevaMejora`).
+3. Haz commit de tus cambios (`git commit -m 'Añade nueva funcionalidad'`).
+4. Haz Push a la rama (`git push origin feature/NuevaMejora`).
+5. Abre un Pull Request.
+
+---
+
+Desarrollado para la comunidad educativa de la **UEP San José**. 🇻🇪
