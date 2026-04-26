@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 // Components
-import Navbar from './components/Navbar';
+import NavbarTransparente from './components/NavbarTransparente';
 import Footer from './components/Footer';
 import WhatsAppBubble from './components/WhatsAppBubble';
 import ScrollToTop from './components/ScrollToTop';
@@ -16,8 +16,8 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <ScrollToTop />
-      <Navbar />
-      <main className="flex-grow pt-20">
+      <NavbarTransparente />
+      <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/nosotros" element={<Nosotros />} />

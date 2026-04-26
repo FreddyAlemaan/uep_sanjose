@@ -1,52 +1,67 @@
-import { MessageCircle, Camera, Mail, MapPin, Phone } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
+import { FaWhatsapp, FaInstagram, FaEnvelope } from 'react-icons/fa';
+import WeatherWidget from './WeatherWidget';
 
 const Footer = () => {
   return (
-    <footer className="bg-primary text-white py-8 border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer className="bg-[#0f172a] text-white pt-16 pb-8 border-t border-white/5 relative overflow-hidden">
+      {/* Decorative Blur Background Element */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-12">
           
-          {/* Brand & Slogan */}
-          <div className="text-center md:text-left">
-            <h3 className="text-xl font-bold">UEP "San José"</h3>
-            <p className="text-blue-200 text-sm mt-1 italic">"FE - Cultura - Vida"</p>
+          {/* Brand & Slogan Column */}
+          <div className="flex flex-col items-center md:items-start gap-4 text-center md:text-left">
+            <div>
+              <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200 mb-1">
+                UEP "San José"
+              </h3>
+              <p className="text-blue-300 text-sm italic tracking-widest uppercase font-medium">"FE - Cultura - Vida"</p>
+            </div>
+            {/* Weather Widget */}
+            <div className="mt-2">
+              <WeatherWidget />
+            </div>
           </div>
 
-          {/* Quick Links Horizontal */}
-          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2">
-            <Link to="/" className="text-blue-100 hover:text-white transition-colors text-sm font-medium">Inicio</Link>
-            <Link to="/nosotros" className="text-blue-100 hover:text-white transition-colors text-sm font-medium">Nosotros</Link>
-            <Link to="/niveles" className="text-blue-100 hover:text-white transition-colors text-sm font-medium">Niveles</Link>
-            <Link to="/contacto" className="text-blue-100 hover:text-white transition-colors text-sm font-medium">Contacto</Link>
-          </nav>
-
-          {/* Socials & Contact Simple */}
-          <div className="flex items-center gap-4">
-            <a href="https://wa.me/582123361155" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all text-blue-100">
-              <MessageCircle size={20} />
-            </a>
-            <a href="https://www.instagram.com/uepsanjose/" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all text-blue-100">
-              <Camera size={20} />
-            </a>
-            <a href="mailto:dptoevaluacion2000@gmail.com" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all text-blue-100">
-              <Mail size={20} />
-            </a>
+          {/* Contact Information Column */}
+          <div className="flex flex-col items-center md:items-start gap-4 text-center md:text-left">
+            <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+              Ubicación
+            </h4>
+            <div className="flex flex-col gap-3 text-sm text-gray-400 items-center md:items-start">
+              <div className="flex items-start gap-3">
+                <MapPin size={18} className="text-blue-400 shrink-0 mt-0.5" />
+                <p>Calle 10, Caracas 1073,<br />Miranda, Venezuela</p>
+              </div>
+            </div>
           </div>
+
+          {/* Socials Column */}
+          <div className="flex flex-col items-center md:items-start gap-4 text-center md:text-left">
+            <h4 className="text-lg font-semibold text-white mb-2">
+              Síguenos
+            </h4>
+            <div className="flex items-center gap-4">
+              <a href="https://wa.me/582123361155" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/5 rounded-full hover:bg-[#25D366] hover:-translate-y-1 transition-all text-white border border-white/10 hover:border-transparent shadow-sm">
+                <FaWhatsapp size={20} />
+              </a>
+              <a href="https://www.instagram.com/uepsanjose/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/5 rounded-full hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:-translate-y-1 transition-all text-white border border-white/10 hover:border-transparent shadow-sm">
+                <FaInstagram size={20} />
+              </a>
+              <a href="mailto:dptoevaluacion2000@gmail.com" className="p-3 bg-white/5 rounded-full hover:bg-[#EA4335] hover:-translate-y-1 transition-all text-white border border-white/10 hover:border-transparent shadow-sm">
+                <FaEnvelope size={20} />
+              </a>
+            </div>
+          </div>
+
         </div>
 
-        {/* Bottom Bar Minimal */}
-        <div className="mt-8 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-blue-300 text-xs">
-          <p>© {new Date().getFullYear()} UEP "San José". Maiquetía, La Guaira.</p>
-          <div className="flex gap-4">
-            <a href="tel:+582123361155" className="hover:text-white transition-colors flex items-center gap-1">
-              <Phone size={12} /> +58 (212) 336-1155
-            </a>
-            <p className="hidden md:block">|</p>
-            <a href="https://www.google.com/maps/place/UE+Parroquial+San+Jos%C3%A9/@10.5310501,-67.1202563,17z/data=!3m1!4b1!4m6!3m5!1s0x8c2a63bf1ab40c17:0x71cb827fae565d19!8m2!3d10.5310501!4d-67.1202563!16s%2Fg%2F1z44bdc4g?entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1">
-              <MapPin size={12} /> Ver Mapa
-            </a>
-          </div>
+        {/* Bottom Bar minimal */}
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-xs text-center md:text-left">
+          <p>© {new Date().getFullYear()} UEP "San José". Todos los derechos reservados.</p>
+          <p className="flex items-center gap-1">Diseñado con <span className="text-red-500 text-sm">♥</span> para la comunidad estudiantil.</p>
         </div>
       </div>
     </footer>

@@ -1,4 +1,5 @@
 import Hero from '../components/Hero';
+import StatsBanner from '../components/StatsBanner';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Users, Star } from 'lucide-react';
 
@@ -6,6 +7,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <StatsBanner />
       
       {/* Quick Links Section */}
       <section className="py-20 bg-white">
