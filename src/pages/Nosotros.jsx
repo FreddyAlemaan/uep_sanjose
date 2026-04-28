@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Target, ScrollText, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { Shield, Target, ScrollText, Users, ChevronDown, Sparkles } from 'lucide-react';
 
 const Nosotros = () => {
   const [showHistory, setShowHistory] = useState(false);
@@ -43,8 +43,8 @@ const Nosotros = () => {
           <div className={`transition-all duration-700 ease-in-out overflow-hidden ${
             showHistory ? 'max-h-[1200px] opacity-100 border-t border-gray-200' : 'max-h-0 opacity-0'
           }`}>
-            <div className="p-8 md:p-12">
-              <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-inner max-h-[600px] overflow-y-auto custom-scrollbar">
+            <div className="p-8 md:p-12 flex flex-col lg:flex-row gap-12">
+              <div className="lg:w-1/2 bg-white rounded-3xl p-8 border border-gray-200 shadow-inner max-h-[600px] overflow-y-auto custom-scrollbar">
                 <div className="space-y-6 text-gray-600 leading-relaxed pr-4 text-lg">
                   <p>
                     El colegio Parroquial San José de Carayaca fue fundado el 16 de septiembre de 1957, por el Pbro. Elio de Bonaventura, párroco de carayaca, un salcedote joven emprendedor, progresista humanista y con grandes deseos de trabajar por el pueblo.
@@ -83,6 +83,9 @@ const Nosotros = () => {
                     Año escolar 2004-2005 se inicio con la creación de una coordinación de pastoral. En este nuevo año escolar 2006-2007 se apertura la mención de Servicios Administrativos y se logró la dotación de nuevos Laboratorios de Informática tanto para la Escuela como para el Liceo.
                   </p>
                 </div>
+              </div>
+              <div className="lg:w-1/2 h-[400px] lg:h-auto rounded-[2.5rem] overflow-hidden shadow-2xl">
+                 <img src="/assets/hero.png" alt="historia" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>

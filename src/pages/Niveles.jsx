@@ -8,33 +8,53 @@ const Niveles = () => {
   const levels = [
     {
       id: 'inicial',
-      title: 'Educación Inicial',
+      title: 'Inicial (2do y 3er Nivel)',
       image: '/assets/inicial.png',
       icon: <Puzzle className="w-6 h-6" />,
       color: 'from-yellow-400 to-orange-500',
-      description: 'Nuestros Pequeños Sabios. Brindamos un espacio seguro donde el niño desarrolla sus habilidades motrices, cognitivas y sociales con amor y valores cristianos.',
+      description: 'Nuestros Pequeños Sabios. Formación integral para niños de 2do y 3er Nivel (4 y 5 años) con amor y valores.',
       items: ['2do Nivel (4 años)', '3er Nivel (5 años)'],
       features: ['Atención personalizada y afectiva', 'Iniciación a la lectura y escritura', 'Actividades lúdicas y recreativas dirigidas', 'Formación y catequesis infantil']
     },
     {
       id: 'primaria',
-      title: 'Educación Primaria',
+      title: 'Primaria (1er a 6to Grado)',
       image: '/assets/primaria.png',
       icon: <Book className="w-6 h-6" />,
       color: 'from-green-400 to-emerald-600',
-      description: 'Bases para el Mañana. Consolidamos el pensamiento lógico, la lectura comprensiva y la curiosidad científica en un ambiente de sana convivencia.',
+      description: 'Bases para el Mañana. Formación desde 1ero a 6to Grado. Consolidamos el pensamiento lógico y la convivencia.',
       items: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
       features: ['Desarrollo del pensamiento lógico-matemático', 'Fomento de la lectura y escritura creativa', 'Educación física, deportes y cultura', 'Preparación sacramental (Primera Comunión)']
     },
     {
-      id: 'bachillerato',
-      title: 'Bachillerato',
+      id: 'bachillerato-1-3',
+      title: 'Bachillerato (1er a 3er Año)',
       image: '/assets/bachillerato.png',
       icon: <GraduationCap className="w-6 h-6" />,
-      color: 'from-blue-500 to-indigo-700',
-      description: 'Formando Ciudadanos. Preparamos a nuestros jóvenes para los retos de la vida universitaria y profesional con disciplina y excelencia académica.',
-      items: ['1er Año', '2do Año', '3er Año', '4to Año', '5to Año'],
-      features: ['Preparación pre-universitaria integral', 'Laboratorios de ciencias e informática', 'Orientación vocacional profesional', 'Proyectos de servicio comunitario']
+      color: 'from-blue-400 to-blue-600',
+      description: 'Media General - Ciclo Básico. 1er Año, 2do Año y 3er Año. Fortaleciendo el pensamiento crítico.',
+      items: ['1er Año', '2do Año', '3er Año'],
+      features: ['Formación integral en ciencias y humanidades', 'Desarrollo de habilidades investigativas', 'Valores de convivencia y disciplina', 'Orientación psicológica y académica']
+    },
+    {
+      id: 'bachillerato-3-5',
+      title: 'Bachillerato (3er a 5to Año)',
+      image: '/assets/bachillerato.png',
+      icon: <GraduationCap className="w-6 h-6" />,
+      color: 'from-blue-600 to-indigo-800',
+      description: 'Media General - Ciclo Diversificado. El gran cambio de camisa. Preparación universitaria intensiva.',
+      items: ['3er Año (Transición)', '4to Año', '5to Año'],
+      features: ['Profundización en áreas específicas', 'Preparación intensiva para la universidad', 'Proyectos de investigación científica', 'Laboratorios avanzados']
+    },
+    {
+      id: 'tecnico-superior',
+      title: 'Técnico Medio (5to a 7mo Año)',
+      image: '/assets/bachillerato.png',
+      icon: <Lightbulb className="w-6 h-6" />,
+      color: 'from-indigo-600 to-purple-800',
+      description: 'Media Técnica Profesional. Especialización práctica de 5to Año a 7mo Año para una inserción laboral exitosa.',
+      items: ['5to Año', '6to Año', '7mo Año'],
+      features: ['Menciones en Informática y Administración', 'Pasantías profesionales garantizadas', 'Certificación técnica especializada', 'Convenios con empresas e instituciones']
     }
   ];
 
@@ -63,12 +83,12 @@ const Niveles = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pb-24">
         {/* Grid de Tarjeticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {levels.map((level) => (
             <button
               key={level.id}
               onClick={() => toggleLevel(level.id)}
-              className={`group relative h-[450px] rounded-[2rem] overflow-hidden shadow-xl transition-all duration-500 hover:-translate-y-4 border-4 ${
+              className={`group relative h-[400px] rounded-[2rem] overflow-hidden shadow-xl transition-all duration-500 hover:-translate-y-4 border-4 ${
                 activeLevel === level.id ? 'border-blue-600 ring-8 ring-blue-50' : 'border-white'
               }`}
             >
@@ -87,7 +107,12 @@ const Niveles = () => {
                 <div className={`absolute -top-8 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg transition-all duration-500 bg-gradient-to-br ${level.color} ${activeLevel === level.id ? 'scale-110 -translate-y-2' : ''}`}>
                   {level.icon}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mt-4 uppercase tracking-tighter">{level.title}</h3>
+                <h3 className="text-lg font-bold text-gray-900 mt-4 uppercase tracking-tighter leading-tight text-center">
+                  {level.title.split(' (')[0]} <br/>
+                  <span className="text-[10px] font-medium text-blue-600 opacity-70">
+                    ({level.title.split(' (')[1]}
+                  </span>
+                </h3>
                 <div className={`w-12 h-1 rounded-full mt-2 bg-gradient-to-r ${level.color} transition-all duration-500 ${activeLevel === level.id ? 'w-24' : ''}`}></div>
               </div>
 
@@ -115,9 +140,12 @@ const Niveles = () => {
                   {/* Content Column */}
                   <div className="md:w-1/2 space-y-8">
                     <div>
-                      <h2 className={`text-4xl font-bold uppercase tracking-tight bg-gradient-to-r ${activeContent.color} bg-clip-text text-transparent mb-4`}>
-                        {activeContent.title}
+                      <h2 className={`text-4xl md:text-5xl font-black uppercase tracking-tighter bg-gradient-to-r ${activeContent.color} bg-clip-text text-transparent leading-none`}>
+                        {activeContent.title.split(' (')[0]}
                       </h2>
+                      <p className="text-xl font-bold text-gray-400 mb-4 mt-2">
+                         ({activeContent.title.split(' (')[1]}
+                      </p>
                       <p className="text-gray-600 text-lg leading-relaxed italic border-l-4 border-blue-600 pl-6">
                         {activeContent.description}
                       </p>
@@ -144,16 +172,16 @@ const Niveles = () => {
                       <div className="flex flex-wrap gap-2">
                         {activeContent.items.map((item, idx) => (
                            <div key={idx} className="px-4 py-2 bg-white border border-gray-200 shadow-sm rounded-xl text-gray-700 font-bold text-sm">
-                             🎓 {item}
+                             {item}
                            </div>
                         ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Special Column (Bachillerato Logic) */}
+                  {/* Special Column (Técnico Logic) */}
                   <div className="md:w-1/2 w-full pt-4 md:pt-0">
-                    {activeLevel === 'bachillerato' ? (
+                    {activeLevel === 'tecnico-superior' ? (
                       <div className="space-y-6">
                         <button
                           onClick={() => setIsTecnico(!isTecnico)}
