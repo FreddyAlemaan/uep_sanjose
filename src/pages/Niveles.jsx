@@ -1,70 +1,124 @@
 import { useState } from 'react';
-import { GraduationCap, Book, Puzzle, Lightbulb, CheckCircle2, ChevronDown, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GraduationCap, Book, Baby, CheckCircle2, ChevronDown, Sparkles, X, BookOpen } from 'lucide-react';
 
 const Niveles = () => {
   const [activeLevel, setActiveLevel] = useState(null);
-  const [isTecnico, setIsTecnico] = useState(false);
 
   const levels = [
     {
       id: 'inicial',
-      title: 'Inicial (2do y 3er Nivel)',
+      title: 'Inicial',
+      subtitle: '2do y 3er Nivel',
       image: '/assets/inicial.png',
-      icon: <Puzzle className="w-6 h-6" />,
-      color: 'from-yellow-400 to-orange-500',
-      description: 'Nuestros Pequeños Sabios. Formación integral para niños de 2do y 3er Nivel (4 y 5 años) con amor y valores.',
-      items: ['2do Nivel (4 años)', '3er Nivel (5 años)'],
-      features: ['Atención personalizada y afectiva', 'Iniciación a la lectura y escritura', 'Actividades lúdicas y recreativas dirigidas', 'Formación y catequesis infantil']
+      icon: <Baby className="w-6 h-6" />,
+      description: "Nuestra etapa inicial se centra en el desarrollo integral del niño, fomentando la curiosidad natural, la socialización y el desarrollo psicomotor. Utilizamos un enfoque pedagógico basado en el juego y el amor.",
+      requirements: [
+        "Partida de Nacimiento (Original y Copia)",
+        "Copia de Cédula de Identidad de los Padres",
+        "4 Fotos tipo carnet del estudiante",
+        "Copia de la Tarjeta de Vacunación",
+        "Constancia de Trabajo de los Padres",
+        "Informe descriptivo del año anterior"
+      ],
+      items: ['2do Nivel (4 años)', '3er Nivel (5 años)']
     },
     {
       id: 'primaria',
-      title: 'Primaria (1er a 6to Grado)',
+      title: 'Primaria',
+      subtitle: '1ero a 6to Grado',
       image: '/assets/primaria.png',
-      icon: <Book className="w-6 h-6" />,
-      color: 'from-green-400 to-emerald-600',
-      description: 'Bases para el Mañana. Formación desde 1ero a 6to Grado. Consolidamos el pensamiento lógico y la convivencia.',
-      items: ['1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado'],
-      features: ['Desarrollo del pensamiento lógico-matemático', 'Fomento de la lectura y escritura creativa', 'Educación física, deportes y cultura', 'Preparación sacramental (Primera Comunión)']
+      icon: <BookOpen className="w-6 h-6" />,
+      description: "En la educación primaria, consolidamos las bases del pensamiento lógico, la comprensión lectora y la formación en valores. Nuestro currículo integra la excelencia académica con actividades culturales.",
+      requirements: [
+        "Certificado de Promoción de Educación Inicial",
+        "Boleta de Calificaciones del grado anterior",
+        "Copia de Cédula del Estudiante",
+        "2 Fotos tipo carnet",
+        "Solvencia administrativa",
+        "Copia de Cédula de Representantes"
+      ],
+      items: ['1er a 3er Grado', '4to a 6to Grado']
     },
     {
       id: 'bachillerato-1-3',
-      title: 'Bachillerato (1er a 3er Año)',
-      image: '/assets/bachillerato.png',
+      title: 'Media G. I',
+      subtitle: '1er a 3er Año',
+      image: '/assets/bachillerato1.png',
       icon: <GraduationCap className="w-6 h-6" />,
-      color: 'from-blue-400 to-blue-600',
-      description: 'Media General - Ciclo Básico. 1er Año, 2do Año y 3er Año. Fortaleciendo el pensamiento crítico.',
-      items: ['1er Año', '2do Año', '3er Año'],
-      features: ['Formación integral en ciencias y humanidades', 'Desarrollo de habilidades investigativas', 'Valores de convivencia y disciplina', 'Orientación psicológica y académica']
+      description: "El ciclo básico de Media General busca fortalecer el pensamiento crítico y analítico. Nos enfocamos en la transición a la adolescencia con herramientas sólidas en ciencias y humanidades.",
+      requirements: [
+        "Certificación de Calificaciones de 6to Grado",
+        "Título de Educación Primaria",
+        "Copia de Cédula de Identidad vigente",
+        "Carta de Buena Conducta",
+        "2 Fotos tipo carnet",
+        "Copia de Cédula de los Representantes"
+      ],
+      items: ['1er Año', '2do Año', '3er Año']
     },
     {
-      id: 'bachillerato-3-5',
-      title: 'Bachillerato (3er a 5to Año)',
-      image: '/assets/bachillerato.png',
+      id: 'bachillerato-4-5',
+      title: 'Media G. II',
+      subtitle: '4to y 5to Año',
+      image: '/assets/bachillerato2.png',
       icon: <GraduationCap className="w-6 h-6" />,
-      color: 'from-blue-600 to-indigo-800',
-      description: 'Media General - Ciclo Diversificado. El gran cambio de camisa. Preparación universitaria intensiva.',
-      items: ['3er Año (Transición)', '4to Año', '5to Año'],
-      features: ['Profundización en áreas específicas', 'Preparación intensiva para la universidad', 'Proyectos de investigación científica', 'Laboratorios avanzados']
+      description: "El ciclo diversificado prepara a nuestros estudiantes para la excelencia universitaria. Profundizamos en áreas científicas y humanísticas, orientando al alumno hacia su vocación.",
+      requirements: [
+        "Certificación de Calificaciones (1ero a 3er Año)",
+        "Inscripción en el SNI",
+        "Copia de Cédula de Identidad vigente",
+        "4 Fotos tipo carnet con uniforme",
+        "Solvencia Administrativa",
+        "Actualización de datos"
+      ],
+      items: ['4to Año', '5to Año']
     },
     {
-      id: 'tecnico-superior',
-      title: 'Técnico Medio (5to a 7mo Año)',
-      image: '/assets/bachillerato.png',
-      icon: <Lightbulb className="w-6 h-6" />,
-      color: 'from-indigo-600 to-purple-800',
-      description: 'Media Técnica Profesional. Especialización práctica de 5to Año a 7mo Año para una inserción laboral exitosa.',
-      items: ['5to Año', '6to Año', '7mo Año'],
-      features: ['Menciones en Informática y Administración', 'Pasantías profesionales garantizadas', 'Certificación técnica especializada', 'Convenios con empresas e instituciones']
+      id: 'tecnico',
+      title: 'Técnico M.',
+      subtitle: '5to a 7mo Año',
+      image: '/assets/bachillerato3.png',
+      icon: <GraduationCap className="w-6 h-6 text-blue-500" />,
+      description: "La Media Técnica es nuestra especialidad de vanguardia. Preparamos a los estudiantes para el campo laboral con menciones en Informática y Administración, incluyendo pasantías profesionales.",
+      requirements: [
+        "Certificación de Calificaciones de 1ero a 5to Año",
+        "Título de Educación Media General",
+        "Pasantías aprobadas",
+        "Inscripción en el SNI",
+        "2 Fotos tipo carnet",
+        "Copia de Cédula de Identidad"
+      ],
+      items: ['5to Año', '6to Año', '7mo Año']
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
   const toggleLevel = (id) => {
-    if (activeLevel === id) {
-      setActiveLevel(null);
-      setIsTecnico(false);
-    } else {
-      setActiveLevel(id);
-      setIsTecnico(false);
+    setActiveLevel(activeLevel === id ? null : id);
+    if (activeLevel !== id) {
+      setTimeout(() => {
+        const element = document.getElementById('details-section');
+        if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
     }
   };
 
@@ -73,170 +127,179 @@ const Niveles = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Section */}
-      <div className="bg-primary pt-32 pb-20 px-4 text-center text-white relative">
+      <div className="bg-[#001731] pt-32 pb-20 px-4 text-center text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]"></div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 relative z-10">Niveles Educativos</h1>
-        <p className="text-blue-100 max-w-xl mx-auto relative z-10 italic">
-          Calidad académica con formación espiritual.
-        </p>
+        <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8 }}
+           className="relative z-10"
+        >
+          <span className="text-blue-400 font-bold tracking-[0.4em] uppercase text-xs mb-4 block">UEP San José</span>
+          <h1 className="text-5xl md:text-7xl font-black mb-4 uppercase tracking-tighter">Niveles Educativos</h1>
+          <div className="w-24 h-1.5 bg-blue-500 mx-auto rounded-full"></div>
+        </motion.div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pb-24">
-        {/* Grid de Tarjeticas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 pb-24">
+        
+        {/* Intro Fina */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto mb-20"
+        >
+          <h2 className="text-3xl md:text-4xl font-black text-[#001731] mb-6 tracking-tighter uppercase">
+            Formando Líderes del Futuro
+          </h2>
+          <p className="text-lg text-gray-500 font-light leading-relaxed italic px-4">
+            "Nuestra oferta académica está diseñada para formar líderes del mañana, 
+            combinando excelencia académica, valores sólidos y un ambiente de 
+            crecimiento integral."
+          </p>
+        </motion.div>
+
+        {/* Grid de Grados (Diseño Compacto con Imágenes) */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+        >
           {levels.map((level) => (
-            <button
+            <motion.div
               key={level.id}
+              variants={itemVariants}
+              whileHover={{ 
+                y: -12, 
+                boxShadow: "0 20px 40px -15px rgba(30, 58, 138, 0.3)",
+              }}
               onClick={() => toggleLevel(level.id)}
-              className={`group relative h-[400px] rounded-[2rem] overflow-hidden shadow-xl transition-all duration-500 hover:-translate-y-4 border-4 ${
-                activeLevel === level.id ? 'border-blue-600 ring-8 ring-blue-50' : 'border-white'
+              className={`cursor-pointer group relative h-[320px] rounded-[2rem] overflow-hidden transition-all duration-500 border-4 ${
+                activeLevel === level.id 
+                  ? 'border-primary ring-4 ring-blue-50 shadow-lg' 
+                  : 'border-white'
               }`}
             >
-              {/* Image Header */}
-              <div className="h-2/3 w-full bg-gray-100 overflow-hidden relative">
-                <img 
-                  src={level.image} 
-                  alt={level.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 ${activeLevel === level.id ? 'opacity-100' : 'opacity-0'}`}></div>
-              </div>
+              {/* Background Image */}
+              <img 
+                src={level.image} 
+                alt={level.title} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              
+              {/* Overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-t from-[#001731] via-[#001731]/40 to-transparent transition-opacity duration-500 ${
+                activeLevel === level.id ? 'opacity-95' : 'opacity-80 group-hover:opacity-90'
+              }`}></div>
 
-              {/* Title & Floating Icon */}
-              <div className="h-1/3 bg-white p-6 flex flex-col justify-center items-center relative">
-                <div className={`absolute -top-8 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg transition-all duration-500 bg-gradient-to-br ${level.color} ${activeLevel === level.id ? 'scale-110 -translate-y-2' : ''}`}>
+              {/* Content */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-end items-center text-center text-white">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/20 backdrop-blur-sm ${
+                  activeLevel === level.id ? 'scale-110 -translate-y-2 bg-primary' : ''
+                }`}>
                   {level.icon}
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mt-4 uppercase tracking-tighter leading-tight text-center">
-                  {level.title.split(' (')[0]} <br/>
-                  <span className="text-[10px] font-medium text-blue-600 opacity-70">
-                    ({level.title.split(' (')[1]}
-                  </span>
-                </h3>
-                <div className={`w-12 h-1 rounded-full mt-2 bg-gradient-to-r ${level.color} transition-all duration-500 ${activeLevel === level.id ? 'w-24' : ''}`}></div>
+                <h3 className="text-sm font-black uppercase tracking-tighter mb-1">{level.title}</h3>
+                <p className="text-[10px] font-bold text-blue-200 uppercase tracking-widest">{level.subtitle}</p>
+                
+                <div className={`mt-4 w-6 h-0.5 bg-blue-400 group-hover:w-10 transition-all duration-500 ${
+                  activeLevel === level.id ? 'w-10 bg-white' : ''
+                }`}></div>
               </div>
-
-              {/* Selection Indicator */}
-              {activeLevel === level.id && (
-                <div className="absolute top-4 right-4 bg-blue-600 text-white p-2 rounded-full animate-bounce">
-                  <ChevronDown size={20} />
-                </div>
-              )}
-            </button>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Panel de Detalle que se despliega fino */}
-        <div className={`transition-all duration-700 ease-in-out overflow-hidden mt-16 ${
-          activeLevel ? 'max-h-[800px] opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'
-        }`}>
-          {activeContent && (
-            <div className="bg-gray-50 rounded-[3rem] p-8 md:p-16 border border-gray-100 shadow-2xl relative">
-               <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                  <Sparkles size={150} />
-               </div>
-               
-               <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-12 items-start relative z-10">
-                  {/* Content Column */}
-                  <div className="md:w-1/2 space-y-8">
-                    <div>
-                      <h2 className={`text-4xl md:text-5xl font-black uppercase tracking-tighter bg-gradient-to-r ${activeContent.color} bg-clip-text text-transparent leading-none`}>
-                        {activeContent.title.split(' (')[0]}
-                      </h2>
-                      <p className="text-xl font-bold text-gray-400 mb-4 mt-2">
-                         ({activeContent.title.split(' (')[1]}
-                      </p>
-                      <p className="text-gray-600 text-lg leading-relaxed italic border-l-4 border-blue-600 pl-6">
-                        {activeContent.description}
-                      </p>
-                    </div>
+        {/* Panel de Detalle */}
+        <AnimatePresence mode="wait">
+          {activeLevel && (
+            <motion.div 
+              id="details-section"
+              key={activeLevel}
+              initial={{ opacity: 0, height: 0, y: 20 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: 20 }}
+              transition={{ duration: 0.6, ease: [0.04, 0.62, 0.23, 0.98] }}
+              className="overflow-hidden"
+            >
+              <div className="bg-gray-50 rounded-[3.5rem] p-8 md:p-16 mt-12 border border-gray-100 shadow-2xl relative overflow-hidden">
+                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                    <Sparkles size={150} className="text-primary" />
+                 </div>
+                 
+                 <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start relative z-10">
+                    {/* Left Column: Intro & Items */}
+                    <div className="space-y-10">
+                      <div>
+                        <h2 className="text-4xl md:text-6xl font-black text-primary uppercase tracking-tighter mb-4 leading-none">
+                          {activeContent.title}
+                        </h2>
+                        <p className="text-xl font-bold text-blue-600 mb-6 uppercase tracking-widest">
+                           {activeContent.subtitle}
+                        </p>
+                        <div className="relative rounded-3xl overflow-hidden h-60 shadow-xl mb-8 group">
+                           <img src={activeContent.image} alt={activeContent.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                           <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent"></div>
+                        </div>
+                        <p className="text-gray-600 text-lg leading-relaxed font-light border-l-4 border-blue-600 pl-6 italic">
+                          {activeContent.description}
+                        </p>
+                      </div>
 
-                    {/* Focos / Especialidades */}
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Programa Educativo</h4>
-                      <div className="grid grid-cols-1 gap-3">
-                        {activeContent.features.map((feature, idx) => (
-                           <div key={idx} className="flex items-center gap-3">
-                             <div className={`p-1.5 rounded-full bg-gradient-to-br ${activeContent.color}`}>
-                                <CheckCircle2 className="text-white w-4 h-4" />
+                      {/* Grados Ofrecidos */}
+                      <div>
+                        <h4 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Grados Disponibles</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {activeContent.items.map((item, idx) => (
+                             <div key={idx} className="px-5 py-2.5 bg-white border border-blue-100 shadow-sm rounded-2xl text-primary font-bold text-xs">
+                               {item}
                              </div>
-                             <span className="font-medium text-gray-700">{feature}</span>
-                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Grados / Niveles Disponibles */}
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Grados Ofrecidos</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {activeContent.items.map((item, idx) => (
-                           <div key={idx} className="px-4 py-2 bg-white border border-gray-200 shadow-sm rounded-xl text-gray-700 font-bold text-sm">
-                             {item}
-                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Special Column (Técnico Logic) */}
-                  <div className="md:w-1/2 w-full pt-4 md:pt-0">
-                    {activeLevel === 'tecnico-superior' ? (
-                      <div className="space-y-6">
-                        <button
-                          onClick={() => setIsTecnico(!isTecnico)}
-                          className={`w-full p-8 rounded-3xl border-2 border-dashed transition-all duration-500 text-left group overflow-hidden relative ${
-                            isTecnico 
-                              ? 'bg-primary border-primary text-white shadow-2xl' 
-                              : 'bg-white border-blue-200 text-primary hover:border-blue-400'
-                          }`}
-                        >
-                          <div className="flex items-center gap-6 relative z-10">
-                            <Lightbulb className={isTecnico ? 'text-yellow-300 animate-pulse' : 'text-primary'} size={40} />
-                            <div>
-                              <h4 className="text-xl font-bold">¿Quieres ser Técnico Superior?</h4>
-                              <p className={`text-sm ${isTecnico ? 'text-blue-100' : 'text-blue-600 font-medium'}`}>
-                                {isTecnico ? 'Cerrar opciones técnicas' : 'Descubre nuestra oferta especializada'}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
-
-                        <div className={`transition-all duration-700 overflow-hidden ${
-                          isTecnico ? 'max-h-[500px] opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
-                        }`}>
-                          <div className="bg-white p-8 rounded-3xl border border-blue-100 shadow-xl space-y-4">
-                            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest text-center border-b pb-4">
-                               6to y 7mo Año - Menciones
-                            </p>
-                            <div className="space-y-3 pt-2">
-                              {['Informática', 'Contabilidad', 'Servicios'].map((mencion, i) => (
-                                 <div key={i} className="px-6 py-4 bg-blue-50 rounded-2xl text-blue-900 font-bold border-l-8 border-blue-600 shadow-sm transition-transform hover:translate-x-2">
-                                   ⚡ {mencion}
-                                 </div>
-                              ))}
-                            </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
-                    ) : (
-                      <div className="hidden md:flex h-full items-center justify-center p-10 opacity-20">
-                         <img src="/assets/logo.png" alt="logo" className="w-56 grayscale hover:grayscale-0 transition-all duration-500" />
+                    </div>
+
+                    {/* Right Column: Requirements Box */}
+                    <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-blue-50 relative">
+                      <div className="absolute -top-6 -left-6 w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
+                         <CheckCircle2 size={24} />
                       </div>
-                    )}
-                  </div>
-               </div>
-               
-               {/* Close button inside panel */}
-               <button 
-                 onClick={() => setActiveLevel(null)}
-                 className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white text-gray-400 p-4 rounded-full shadow-lg border border-gray-100 hover:text-blue-600 transition-colors"
-               >
-                  <ChevronDown className="rotate-180" size={24} />
-               </button>
-            </div>
+                      <h4 className="text-xl font-black text-[#001731] mb-8 uppercase tracking-tight">Requisitos de Inscripción</h4>
+                      
+                      <ul className="space-y-5">
+                        {activeContent.requirements.map((req, idx) => (
+                          <li key={idx} className="flex items-start gap-4 group">
+                            <div className="mt-1 w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-primary group-hover:text-white transition-all duration-300 flex-shrink-0">
+                              <CheckCircle2 size={12} />
+                            </div>
+                            <span className="text-gray-700 font-medium text-sm leading-tight">{req}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-10 pt-8 border-t border-gray-100 text-center">
+                         <button className="w-full bg-primary hover:bg-blue-800 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-lg hover:shadow-primary/30 active:scale-95">
+                            Iniciar Admisión
+                         </button>
+                      </div>
+                    </div>
+                 </div>
+                 
+                 {/* Close button */}
+                 <button 
+                   onClick={() => setActiveLevel(null)}
+                   className="absolute top-8 right-8 text-gray-300 hover:text-red-500 transition-colors"
+                 >
+                    <X size={32} />
+                 </button>
+              </div>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
     </div>
   );
