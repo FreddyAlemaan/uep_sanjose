@@ -5,14 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── Video specs ─────────────────────────────────────────────────────────────
+// ─── Video specs (updated: 6 s · 1280×720 · 24 fps = 144 frames) ────────────
 const VIDEO_SRC  = '/hero.mp4'
 const VIDEO_W    = 1280
 const VIDEO_H    = 720
 
-// Reduce frame count on narrow viewports to halve GPU memory on phones
+// 6 s × 24 fps = 144 frames. Half on mobile to save ~70 MB GPU memory.
 const FRAME_COUNT: number =
-  typeof window !== 'undefined' && window.innerWidth < 768 ? 96 : 192
+  typeof window !== 'undefined' && window.innerWidth < 768 ? 72 : 144
 
 // ─── WHY canvas + ImageBitmap instead of <video>.currentTime ─────────────────
 // Setting video.currentTime triggers async decoder seek — the browser must
@@ -30,7 +30,8 @@ const FRAME_COUNT: number =
 // div + CSS position:sticky achieves the same visual pinning with no spacer.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Module-level frame cache — survives React unmount/remount (e.g. back navigation)
+// Module-level frame cache — survives React unmount/remount (e.g. back navigation).
+// Reset this to null whenever the video file is replaced.
 let _cachedFrames: ImageBitmap[] | null = null
 
 export default function Hero() {
@@ -38,7 +39,7 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const canvasRef  = useRef<HTMLCanvasElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const loadRef    = useRef<HTMLDivElement>(null)
+  // loadRef removed — loading overlay is no longer rendered
   const framesRef  = useRef<ImageBitmap[]>(_cachedFrames ?? [])
 
   // Honour prefers-reduced-motion: skip extraction and scroll animation entirely
@@ -46,7 +47,7 @@ export default function Hero() {
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  const [loadPct, setLoadPct] = useState<number>(_cachedFrames ? 100 : 0)
+  const [loadPct, setLoadPct] = useState<number>(_cachedFrames ? 100 : 0)  // eslint-disable-line @typescript-eslint/no-unused-vars
   const [ready,   setReady]   = useState<boolean>(!!_cachedFrames || reduced)
 
   // ── 1. Frame extraction ───────────────────────────────────────────────────
@@ -101,9 +102,10 @@ export default function Hero() {
     return () => { cancelled = true; video.src = '' }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── 2. Entrance animation (fires once, after frames are ready) ────────────
+  // ── 2. Entrance animation (fires on mount — no need to wait for frames) ──
+  // The hero background is brand blue while extraction runs, so the text
+  // animating in immediately looks intentional, not like a broken loading state.
   useEffect(() => {
-    if (!ready) return
     const ctx = gsap.context(() => {
       gsap.timeline({ delay: reduced ? 0 : 0.35 })
         .fromTo('.hero-eyebrow',
@@ -127,7 +129,7 @@ export default function Hero() {
         )
     }, sectionRef)
     return () => ctx.revert()
-  }, [ready]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── 3. Canvas scrub + text parallax ──────────────────────────────────────
   useLayoutEffect(() => {
@@ -135,7 +137,6 @@ export default function Hero() {
     const canvas  = canvasRef.current
     const outer   = outerRef.current
     const content = contentRef.current
-    const loading = loadRef.current
     if (!canvas || !outer || !content) return
 
     const ctx2d = canvas.getContext('2d')!
@@ -166,15 +167,6 @@ export default function Hero() {
     // Paint frame 0 immediately so canvas is never blank on load
     const first = framesRef.current[0]
     if (first) drawFrame(first)
-
-    // Fade out the loading overlay once frames are ready
-    if (loading) {
-      gsap.to(loading, {
-        opacity:    0,
-        duration:   0.5,
-        onComplete: () => { loading.style.display = 'none' },
-      })
-    }
 
     // Track current scroll progress so resize can repaint the correct frame
     let currentProgress = 0
@@ -255,27 +247,6 @@ export default function Hero() {
             style={{ width: '100%', height: '100%' }}
             aria-hidden="true"
           />
-        )}
-
-        {/* ── Loading overlay (fades out when frames are ready) ── */}
-        {!reduced && (
-          <div
-            ref={loadRef}
-            className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-brand"
-          >
-            <p className="text-white/40 text-[10px] font-semibold uppercase tracking-[0.28em] mb-6">
-              Cargando experiencia
-            </p>
-            <div className="w-52 h-px bg-white/10 overflow-hidden rounded-full">
-              <div
-                className="h-full bg-white/55 rounded-full transition-[width] duration-100"
-                style={{ width: `${loadPct}%` }}
-              />
-            </div>
-            <p className="text-white/25 text-[10px] font-mono mt-3 tabular-nums">
-              {loadPct}%
-            </p>
-          </div>
         )}
 
         {/* ── Gradient overlays: depth without hiding the video ── */}
