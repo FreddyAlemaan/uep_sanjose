@@ -1,179 +1,339 @@
-import { useRef, useEffect, useLayoutEffect } from 'react'
+import { useRef, useEffect, useLayoutEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Place hero.mp4 inside /public so it is served directly (no bundling for large binaries).
-const HERO_VIDEO_SRC = '/hero.mp4'
+// ─── Video specs ─────────────────────────────────────────────────────────────
+const VIDEO_SRC  = '/hero.mp4'
+const VIDEO_W    = 1280
+const VIDEO_H    = 720
+
+// Reduce frame count on narrow viewports to halve GPU memory on phones
+const FRAME_COUNT: number =
+  typeof window !== 'undefined' && window.innerWidth < 768 ? 96 : 192
+
+// ─── WHY canvas + ImageBitmap instead of <video>.currentTime ─────────────────
+// Setting video.currentTime triggers async decoder seek — the browser must
+// find the nearest keyframe, decompress backwards, and render. That latency
+// is what makes video scrub feel "choppy" or "frame-flippy."
+//
+// ImageBitmap objects are GPU-resident textures. drawImage() on a bitmap is
+// purely a GPU blit — synchronous, zero decode cost, identical to how Apple's
+// iPhone page works. The extraction phase (loadedmetadata + seeked loop) pays
+// the decode cost once up front, then playback is instant on every scroll tick.
+//
+// ─── WHY sticky div instead of GSAP pin ──────────────────────────────────────
+// GSAP pin:true injects a transparent spacer div. Against the white page body
+// that spacer is visible as a white flash while scrolling. Using a 400vh outer
+// div + CSS position:sticky achieves the same visual pinning with no spacer.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Module-level frame cache — survives React unmount/remount (e.g. back navigation)
+let _cachedFrames: ImageBitmap[] | null = null
 
 export default function Hero() {
-  const containerRef = useRef<HTMLElement>(null)
-  const videoRef     = useRef<HTMLVideoElement>(null)
-  const contentRef   = useRef<HTMLDivElement>(null)
+  const outerRef   = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const canvasRef  = useRef<HTMLCanvasElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const loadRef    = useRef<HTMLDivElement>(null)
+  const framesRef  = useRef<ImageBitmap[]>(_cachedFrames ?? [])
 
-  // ── Entrance animation (fires once on mount, before any scroll) ──────────
-  // Operates on individual elements; does NOT touch contentRef wrapper opacity.
+  // Honour prefers-reduced-motion: skip extraction and scroll animation entirely
+  const reduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  const [loadPct, setLoadPct] = useState<number>(_cachedFrames ? 100 : 0)
+  const [ready,   setReady]   = useState<boolean>(!!_cachedFrames || reduced)
+
+  // ── 1. Frame extraction ───────────────────────────────────────────────────
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.55 })
+    if (_cachedFrames || reduced) return   // cache hit or motion disabled
 
-      tl.fromTo(
-        '.hero-eyebrow',
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+    const video      = document.createElement('video')
+    video.src        = VIDEO_SRC
+    video.muted      = true
+    video.preload    = 'auto'
+    video.playsInline = true
+
+    const off        = document.createElement('canvas')
+    off.width        = VIDEO_W
+    off.height       = VIDEO_H
+    const offCtx     = off.getContext('2d')!
+
+    let cancelled    = false
+
+    ;(async () => {
+      // Wait for duration to be known
+      await new Promise<void>(res =>
+        video.addEventListener('loadedmetadata', () => res(), { once: true })
       )
-        .fromTo(
-          '.hero-headline',
-          { opacity: 0, y: 38 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' },
+
+      const dur    = video.duration
+      const frames: ImageBitmap[] = []
+
+      for (let i = 0; i < FRAME_COUNT; i++) {
+        if (cancelled) return
+
+        video.currentTime = (i / (FRAME_COUNT - 1)) * dur
+
+        // Wait for seek to complete (with 2 s safety timeout per frame)
+        await new Promise<void>(res => {
+          const t = setTimeout(() => res(), 2000)
+          video.addEventListener('seeked', () => { clearTimeout(t); res() }, { once: true })
+        })
+
+        if (cancelled) return
+
+        offCtx.drawImage(video, 0, 0, VIDEO_W, VIDEO_H)
+        frames.push(await createImageBitmap(off))
+        setLoadPct(Math.round(((i + 1) / FRAME_COUNT) * 100))
+      }
+
+      framesRef.current = frames
+      _cachedFrames     = frames
+      setReady(true)
+    })()
+
+    return () => { cancelled = true; video.src = '' }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── 2. Entrance animation (fires once, after frames are ready) ────────────
+  useEffect(() => {
+    if (!ready) return
+    const ctx = gsap.context(() => {
+      gsap.timeline({ delay: reduced ? 0 : 0.35 })
+        .fromTo('.hero-eyebrow',
+          { opacity: 0, y: reduced ? 0 : 18 },
+          { opacity: 1, y: 0, duration: reduced ? 0.01 : 0.6, ease: 'power3.out' }
+        )
+        .fromTo('.hero-headline',
+          { opacity: 0, y: reduced ? 0 : 38 },
+          { opacity: 1, y: 0, duration: reduced ? 0.01 : 0.9, ease: 'power3.out' },
           '-=0.35'
         )
-        .fromTo(
-          '.hero-sub',
-          { opacity: 0, y: 22 },
-          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+        .fromTo('.hero-sub',
+          { opacity: 0, y: reduced ? 0 : 22 },
+          { opacity: 1, y: 0, duration: reduced ? 0.01 : 0.7, ease: 'power3.out' },
           '-=0.45'
         )
-        .fromTo(
-          '.hero-ctas',
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+        .fromTo('.hero-ctas',
+          { opacity: 0, y: reduced ? 0 : 18 },
+          { opacity: 1, y: 0, duration: reduced ? 0.01 : 0.6, ease: 'power3.out' },
           '-=0.35'
         )
-    }, containerRef)
-
+    }, sectionRef)
     return () => ctx.revert()
-  }, [])
+  }, [ready]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Video scrub + text parallax via ScrollTrigger ────────────────────────
-  // useLayoutEffect ensures ScrollTrigger is registered before first paint.
+  // ── 3. Canvas scrub + text parallax ──────────────────────────────────────
   useLayoutEffect(() => {
-    const video     = videoRef.current
-    const container = containerRef.current
-    const content   = contentRef.current
-    if (!video || !container || !content) return
+    if (!ready || reduced) return
+    const canvas  = canvasRef.current
+    const outer   = outerRef.current
+    const content = contentRef.current
+    const loading = loadRef.current
+    if (!canvas || !outer || !content) return
 
-    let ctx: ReturnType<typeof gsap.context> | null = null
+    const ctx2d = canvas.getContext('2d')!
+    ctx2d.imageSmoothingEnabled = true
+    ctx2d.imageSmoothingQuality = 'high'
 
-    const initScrub = () => {
-      ctx = gsap.context(() => {
-        // 1. Pin the hero and drive video.currentTime via scroll progress.
-        //    end "+=300%" = 3 × viewport-height of scroll travel.
-        ScrollTrigger.create({
-          trigger:  container,
-          start:    'top top',
-          end:      '+=300%',
-          pin:      true,
-          scrub:    true,
-          onUpdate: (self) => {
-            const dur = video.duration
-            if (dur && !isNaN(dur)) {
-              video.currentTime = dur * self.progress
-            }
-          },
-        })
+    // Cap DPR at 2 — prevents 4K canvas on high-density displays
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
-        // 2. Text parallax: content wrapper drifts up and fades out in the
-        //    first third of the pinned scroll (Emil-style cinematic reveal).
-        gsap.to(content, {
-          y:        -80,
-          opacity:  0,
-          ease:     'none',
-          scrollTrigger: {
-            trigger: container,
-            start:   'top top',
-            end:     '+=110%',
-            scrub:   1.5,
-          },
-        })
-      }, container)
+    const sizeCanvas = () => {
+      canvas.width  = window.innerWidth  * dpr
+      canvas.height = window.innerHeight * dpr
+    }
+    sizeCanvas()
+
+    // object-fit:cover equivalent for canvas: crop from centre, fill canvas
+    const drawFrame = (bmp: ImageBitmap) => {
+      const cw    = canvas.width
+      const ch    = canvas.height
+      const scale = Math.max(cw / bmp.width, ch / bmp.height)
+      const sw    = cw / scale
+      const sh    = ch / scale
+      const sx    = (bmp.width  - sw) / 2
+      const sy    = (bmp.height - sh) / 2
+      ctx2d.drawImage(bmp, sx, sy, sw, sh, 0, 0, cw, ch)
     }
 
-    // Wait for video metadata so video.duration is available.
-    if (video.readyState >= 1) {
-      initScrub()
-    } else {
-      video.addEventListener('loadedmetadata', initScrub, { once: true })
+    // Paint frame 0 immediately so canvas is never blank on load
+    const first = framesRef.current[0]
+    if (first) drawFrame(first)
+
+    // Fade out the loading overlay once frames are ready
+    if (loading) {
+      gsap.to(loading, {
+        opacity:    0,
+        duration:   0.5,
+        onComplete: () => { loading.style.display = 'none' },
+      })
     }
+
+    // Track current scroll progress so resize can repaint the correct frame
+    let currentProgress = 0
+
+    const stCtx = gsap.context(() => {
+      // Frame swap: no lerp needed — ImageBitmap drawImage is a GPU blit (instant)
+      ScrollTrigger.create({
+        trigger:  outer,
+        start:    'top top',
+        end:      'bottom bottom',
+        onUpdate: (self) => {
+          currentProgress = self.progress
+          const frames    = framesRef.current
+          const idx       = Math.min(
+            Math.round(self.progress * (frames.length - 1)),
+            frames.length - 1
+          )
+          if (frames[idx]) drawFrame(frames[idx])
+        },
+      })
+
+      // Text parallax: Emil Kowalski-style weighted lag (scrub:1.5)
+      gsap.to(content, {
+        y:    -90,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: outer,
+          start:   'top top',
+          end:     '+=1100',
+          scrub:   1.5,
+        },
+      })
+    }, outer)
+
+    // On resize: re-size canvas and repaint the current frame
+    const onResize = () => {
+      sizeCanvas()
+      const frames = framesRef.current
+      const idx    = Math.min(
+        Math.round(currentProgress * (frames.length - 1)),
+        frames.length - 1
+      )
+      if (frames[idx]) drawFrame(frames[idx])
+    }
+    window.addEventListener('resize', onResize)
 
     return () => {
-      video.removeEventListener('loadedmetadata', initScrub)
-      ctx?.revert()
+      window.removeEventListener('resize', onResize)
+      stCtx.revert()
     }
-  }, [])
+  }, [ready]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section
-      id="inicio"
-      ref={containerRef}
-      className="relative min-h-[100dvh] flex items-center overflow-hidden"
+    // ── Outer container: 400vh with brand-blue bg fills the scroll space ───
+    // Brand blue is always visible during scroll — no white flash from spacers.
+    <div
+      ref={outerRef}
+      className="relative"
+      style={{ height: reduced ? 'auto' : '400vh', background: '#1A3A6B' }}
     >
-      {/* Background video — scrubbed by scroll, no autoPlay */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
-        preload="auto"
-        muted
-        playsInline
-        aria-hidden="true"
+      {/* ── Sticky section: viewport-pinned via CSS, no GSAP pin needed ── */}
+      <section
+        ref={sectionRef}
+        id="inicio"
+        className={[
+          'flex items-center overflow-hidden bg-brand',
+          reduced ? 'min-h-[100dvh]' : 'sticky top-0 min-h-[100dvh]',
+        ].join(' ')}
       >
-        <source src={HERO_VIDEO_SRC} type="video/mp4" />
-      </video>
+        {/* ── Canvas: GPU bitmap draw on every scroll tick ── */}
+        {!reduced && (
+          <canvas
+            ref={canvasRef}
+            width={VIDEO_W}
+            height={VIDEO_H}
+            className="absolute inset-0"
+            style={{ width: '100%', height: '100%' }}
+            aria-hidden="true"
+          />
+        )}
 
-      {/* Brand overlay: stronger left, fades right for depth */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-brand/92 via-brand/65 to-brand/20"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-black/38 via-transparent to-black/16"
-      />
+        {/* ── Loading overlay (fades out when frames are ready) ── */}
+        {!reduced && (
+          <div
+            ref={loadRef}
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-brand"
+          >
+            <p className="text-white/40 text-[10px] font-semibold uppercase tracking-[0.28em] mb-6">
+              Cargando experiencia
+            </p>
+            <div className="w-52 h-px bg-white/10 overflow-hidden rounded-full">
+              <div
+                className="h-full bg-white/55 rounded-full transition-[width] duration-100"
+                style={{ width: `${loadPct}%` }}
+              />
+            </div>
+            <p className="text-white/25 text-[10px] font-mono mt-3 tabular-nums">
+              {loadPct}%
+            </p>
+          </div>
+        )}
 
-      {/* Text content — controlled by parallax scrub */}
-      <div
-        ref={contentRef}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full pt-24 pb-20"
-      >
-        <div className="max-w-[600px]">
-          <p className="hero-eyebrow opacity-0 text-white/65 text-xs font-semibold uppercase tracking-[0.22em] mb-5">
-            Bienvenidos a
-          </p>
+        {/* ── Gradient overlays: depth without hiding the video ── */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-brand/92 via-brand/65 to-brand/20 pointer-events-none z-10"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-t from-black/38 via-transparent to-black/16 pointer-events-none z-10"
+        />
 
-          <h1 className="hero-headline opacity-0 text-white font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.04] tracking-tight mb-6">
-            Unidad Educativa
-            <br />
-            <span className="text-white/75">Parroquial</span> San Jose
-          </h1>
+        {/* ── Text content (parallax-scrubbed away on scroll) ── */}
+        <div
+          ref={contentRef}
+          className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 w-full pt-24 pb-20"
+        >
+          <div className="max-w-[600px]">
+            <p className="hero-eyebrow opacity-0 text-white/65 text-[11px] font-semibold uppercase tracking-[0.24em] mb-5">
+              Bienvenidos a
+            </p>
 
-          <p className="hero-sub opacity-0 text-white/80 text-lg md:text-xl leading-relaxed mb-10 max-w-[480px]">
-            Formando lideres con valores solidos en Preescolar, Primaria y Bachillerato desde hace decadas.
-          </p>
+            <h1 className="hero-headline opacity-0 text-white font-bold text-5xl md:text-6xl lg:text-[4.25rem] leading-[1.04] tracking-tight mb-6">
+              Unidad Educativa
+              <br />
+              <span className="text-white/75">Parroquial</span> San Jose
+            </h1>
 
-          <div className="hero-ctas opacity-0 flex flex-col sm:flex-row gap-4">
-            <Link
-              to="/nosotros"
-              className="btn btn-shine px-7 py-3.5 bg-white text-brand font-semibold rounded-lg text-base shadow-md hover:shadow-lg hover:shadow-white/20"
-            >
-              Conoce mas
-            </Link>
-            <Link
-              to="/contacto"
-              className="btn px-7 py-3.5 border-2 border-white/50 text-white font-semibold rounded-lg text-base hover:border-white hover:bg-white/10"
-            >
-              Contactanos
-            </Link>
+            <p className="hero-sub opacity-0 text-white/80 text-lg md:text-xl leading-relaxed mb-10 max-w-[480px]">
+              Formamos lideres con valores solidos desde Preescolar hasta Bachillerato.
+            </p>
+
+            <div className="hero-ctas opacity-0 flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/nosotros"
+                className="btn btn-shine inline-flex items-center justify-center px-7 py-3.5 bg-white text-brand font-semibold rounded-lg text-base shadow-md hover:shadow-lg hover:shadow-white/20"
+              >
+                Conoce mas
+              </Link>
+              <Link
+                to="/contacto"
+                className="btn inline-flex items-center justify-center px-7 py-3.5 border-2 border-white/50 text-white font-semibold rounded-lg text-base hover:border-white hover:bg-white/10"
+              >
+                Contactanos
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Soft bottom fade into next section */}
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white to-transparent"
-      />
-    </section>
+      {/* Gradient bridge: brand-blue scroll space seamlessly into next section */}
+      {!reduced && (
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 right-0 pointer-events-none"
+          style={{ height: '18vh', background: 'linear-gradient(to bottom, transparent, #ffffff)' }}
+        />
+      )}
+    </div>
   )
 }

@@ -21,11 +21,12 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen]   = useState(false)
 
   useEffect(() => {
-    // Entrance: slide down from above
+    // Entrance: slide down from above. force3D promotes to GPU compositor layer,
+    // preventing frame drops while the 686KB logo PNG is being decoded.
     gsap.fromTo(
       navRef.current,
-      { y: -90, opacity: 0 },
-      { y: 0,   opacity: 1, duration: 0.85, ease: 'power3.out', delay: 0.15 }
+      { y: -90, opacity: 0, force3D: true },
+      { y: 0,   opacity: 1, duration: 0.85, ease: 'power3.out', delay: 0.15, force3D: true }
     )
 
     // Toggle solid bg when scrolled past 60 px
@@ -72,7 +73,11 @@ export default function Navbar() {
             src={logo}
             alt=""
             aria-hidden="true"
-            className="h-10 w-10 object-contain drop-shadow-sm"
+            width={40}
+            height={40}
+            fetchPriority="high"
+            decoding="async"
+            className="h-10 w-10 object-contain"
           />
           <span className="text-white font-semibold text-lg leading-tight tracking-tight">
             U.E.P. San Jose

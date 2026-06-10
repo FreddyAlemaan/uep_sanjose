@@ -31,7 +31,9 @@ export default function PageTransition({ children }: Props) {
   }, [location.pathname])
 
   return (
-    <div ref={ref} style={{ willChange: 'transform, opacity' }}>
+    // opacity:0 here means the element is invisible from first paint.
+    // GSAP's fromTo then animates it to 1, with no flash in between.
+    <div ref={ref} style={{ opacity: 0, willChange: 'transform, opacity' }}>
       {children}
     </div>
   )
