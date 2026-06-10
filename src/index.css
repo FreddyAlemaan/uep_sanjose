@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", system-ui, sans-serif;
+
+  --color-brand:       #1A3A6B;
+  --color-brand-mid:   #1E51A8;
+  --color-brand-pale:  #EEF3FA;
+  --color-brand-muted: #8BA9D0;
+  --color-gold:        #E8B84B;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #111827;
+  background-color: #ffffff;
+}
+
+/* ─── Emil Kowalski-style button utilities ───────────────────────── */
+
+/* Shared transition for all CTAs - spring-like cubic-bezier */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition:
+    transform 0.22s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.22s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+  will-change: transform;
+}
+
+.btn:hover  { transform: scale(1.018); }
+.btn:active { transform: scale(0.968); }
+
+/* Shine sweep: a light streak that travels across on hover */
+.btn-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 80%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+.btn-shine:hover::before {
+  animation: shine-sweep 0.62s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes shine-sweep {
+  to { left: 155%; }
+}
+
+/* Focus ring - accessible, on-brand */
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.35);
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
