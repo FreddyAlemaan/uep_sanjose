@@ -2,8 +2,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar         from './components/Navbar';
 import Footer         from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import ScrollToHash   from './components/ScrollToHash';
 import Home       from './pages/Home';
 import About      from './pages/About';
+import Academic   from './pages/Academic';
 import Admissions from './pages/Admissions';
 import Contact    from './pages/Contact';
 
@@ -17,6 +19,7 @@ const Placeholder = ({ titulo }) => (
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToHash />
       <Navbar />
 
       {/* El padding-top compensa el navbar fijo de 80px en desktop */}
@@ -25,7 +28,7 @@ export default function App() {
           <Route path="/"                 element={<Home />} />
           <Route path="/colegio"          element={<About />} />
           <Route path="/admisiones"       element={<Admissions />} />
-          <Route path="/academico"        element={<Placeholder titulo="Académico" />} />
+          <Route path="/academico"        element={<Academic />} />
           <Route path="/vida-estudiantil" element={<Placeholder titulo="Vida Estudiantil" />} />
           <Route path="/noticias"         element={<Placeholder titulo="Noticias" />} />
           <Route path="/contacto"         element={<Contact />} />

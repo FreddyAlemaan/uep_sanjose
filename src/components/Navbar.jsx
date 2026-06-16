@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { gsap } from '../utils/gsapHelpers';
 import { useNavbarScroll } from '../hooks/useNavbarScroll';
@@ -46,6 +46,16 @@ export default function Navbar() {
 
   /* ─── Sincronizar ref con estado ───────────────────────────────────────── */
   useEffect(() => { isScrolledRef.current = isScrolled; }, [isScrolled]);
+
+  /* ─── Estado inicial del panel móvil (una sola vez, antes del primer pintado) ──
+     Antes esto vivía en un atributo `style` fijo en el JSX, pero React lo
+     volvía a aplicar en cada re-render (p. ej. al hacer setIsOpen(true)),
+     pisando la animación de GSAP y dejando el botón hamburguesa "sin efecto".
+     Al moverlo aquí, GSAP es el único dueño de display/transform del panel. */
+  useLayoutEffect(() => {
+    gsap.set(mobileRef.current, { display: 'none', y: '-100%' });
+    gsap.set(dropdownRef.current, { opacity: 0, pointerEvents: 'none' });
+  }, []);
 
   /* ─── Animación de entrada (solo al montar) ────────────────────────────── */
   useEffect(() => {
@@ -128,7 +138,11 @@ export default function Navbar() {
   const abrirMenu = () => {
     setIsOpen(true);
 
-    /* Animar hamburguesa → X */
+    /* Forzar fondo navy sólido en el header mientras el menú está abierto,
+       para que la X sea legible sin importar si había scroll o no */
+    gsap.to(navRef.current, { backgroundColor: 'rgba(27, 77, 140, 0.97)', duration: 0.3 });
+
+    /* Animar hamburguesa → X (siempre blanca mientras está abierta) */
     gsap.to(bar1Ref.current, { rotate: 45, y: 6,  duration: 0.3, ease: 'power2.inOut' });
     gsap.to(bar2Ref.current, { opacity: 0, scaleX: 0, duration: 0.2 });
     gsap.to(bar3Ref.current, { rotate: -45, y: -6, duration: 0.3, ease: 'power2.inOut' });
@@ -152,6 +166,14 @@ export default function Navbar() {
     gsap.to(bar1Ref.current, { rotate: 0, y: 0, duration: 0.3, ease: 'power2.inOut' });
     gsap.to(bar2Ref.current, { opacity: 1, scaleX: 1, duration: 0.25, delay: 0.05 });
     gsap.to(bar3Ref.current, { rotate: 0, y: 0, duration: 0.3, ease: 'power2.inOut' });
+
+    /* Restaurar el fondo del header según el estado real de scroll */
+    gsap.to(navRef.current, {
+      backgroundColor: isScrolledRef.current
+        ? 'rgba(255, 255, 255, 0.97)'
+        : 'rgba(27, 77, 140, 0.35)',
+      duration: 0.3,
+    });
 
     /* Panel sube */
     gsap.to(mobileRef.current, {
@@ -288,7 +310,6 @@ export default function Navbar() {
                       ref={dropdownRef}
                       onMouseEnter={() => clearTimeout(dropTimerRef.current)}
                       onMouseLeave={ocultarDropdown}
-                      style={{ opacity: 0, pointerEvents: 'none' }}
                       className="absolute top-full left-0 mt-2 w-52 z-40
                         rounded-xl bg-white shadow-lg
                         border-t-[3px] border-secondary overflow-hidden"
@@ -351,19 +372,19 @@ export default function Navbar() {
               ref={bar1Ref}
               className={`block h-0.5 w-5 rounded-full origin-center
                 transition-colors duration-300 ease-out
-                ${isScrolled || isOpen ? 'bg-primary' : 'bg-white'}`}
+                ${isOpen ? 'bg-white' : isScrolled ? 'bg-primary' : 'bg-white'}`}
             />
             <span
               ref={bar2Ref}
               className={`block h-0.5 w-5 rounded-full
                 transition-colors duration-300 ease-out
-                ${isScrolled || isOpen ? 'bg-primary' : 'bg-white'}`}
+                ${isOpen ? 'bg-white' : isScrolled ? 'bg-primary' : 'bg-white'}`}
             />
             <span
               ref={bar3Ref}
               className={`block h-0.5 w-5 rounded-full origin-center
                 transition-colors duration-300 ease-out
-                ${isScrolled || isOpen ? 'bg-primary' : 'bg-white'}`}
+                ${isOpen ? 'bg-white' : isScrolled ? 'bg-primary' : 'bg-white'}`}
             />
           </button>
         </div>
@@ -376,21 +397,54 @@ export default function Navbar() {
         role="dialog"
         aria-modal="true"
         aria-label="Menú de navegación"
-        style={{ display: 'none', transform: 'translateY(-100%)' }}
-        className="fixed inset-0 z-40 flex-col items-center justify-center
-          bg-primary overflow-y-auto pt-24 pb-10 px-6"
+        className="fixed inset-0 z-40 flex-col overflow-y-auto
+          bg-gradient-to-br from-primary via-primary to-primary-dark"
       >
-        <nav aria-label="Navegación móvil">
-          <ul ref={mobileLinkRef} className="flex flex-col items-center gap-2 w-full">
-            {NAV_LINKS.map(({ label, path, hasDropdown }) => (
+        {/* Marca de agua decorativa: escudo + nombre, ambos muy tenues */}
+        <div
+          aria-hidden="true"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2
+            flex flex-col items-center select-none pointer-events-none"
+        >
+          <img src={logoSrc} alt="" className="h-[42vh] w-[42vh] max-h-80 max-w-80 object-contain opacity-[0.06]" />
+          <p className="-mt-6 whitespace-nowrap font-display text-[22vw] font-bold text-white/[0.04]">
+            San José
+          </p>
+        </div>
+
+        {/* Encabezado del panel: logo + cierre explícito */}
+        <div className="relative z-10 flex items-center justify-between px-6 pt-6">
+          <div className="flex items-center gap-2.5">
+            <img src={logoSrc} alt="" className="h-9 w-9 object-contain" />
+            <span className="font-display text-sm font-bold text-white leading-tight">
+              U.E. Parroquial<br />San José
+            </span>
+          </div>
+          <button
+            onClick={cerrarMenu}
+            aria-label="Cerrar menú"
+            className="flex h-10 w-10 items-center justify-center rounded-full
+              bg-white/10 text-white hover:bg-white/20 transition-colors"
+          >
+            <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <nav aria-label="Navegación móvil" className="relative z-10 flex-1 flex flex-col justify-center px-6 py-10">
+          <ul ref={mobileLinkRef} className="flex flex-col items-stretch gap-1 w-full max-w-sm mx-auto">
+            {NAV_LINKS.map(({ label, path, hasDropdown }, idx) => (
               <li key={path} className="w-full text-center">
+                {idx > 0 && <div className="h-px bg-white/10 mx-auto w-full" />}
+
                 {hasDropdown ? (
                   <>
                     {/* Trigger del submenú en móvil */}
                     <button
                       onClick={() => setMobileColegioOpen(p => !p)}
                       className="w-full flex items-center justify-center gap-2
-                        py-3 text-xl font-medium text-white hover:text-secondary
+                        py-4 text-lg font-semibold text-white hover:text-secondary
                         transition-colors"
                     >
                       {label}
@@ -406,13 +460,13 @@ export default function Navbar() {
 
                     {/* Sub-ítems indentados */}
                     {mobileColegioOpen && (
-                      <ul className="mt-1 mb-2 flex flex-col gap-1 pl-4 border-l-2 border-secondary/40 ml-auto mr-auto w-48">
+                      <ul className="mb-3 flex flex-col gap-1 pl-4 border-l-2 border-secondary/40 ml-auto mr-auto w-52">
                         {DROPDOWN_ITEMS.map(({ label: dl, path: dp }) => (
                           <li key={dp}>
                             <Link
                               to={dp}
                               onClick={cerrarMenu}
-                              className="block py-2 text-base text-white/75 hover:text-secondary
+                              className="block py-2 text-base text-white/70 hover:text-secondary
                                 transition-colors text-left"
                             >
                               {dl}
@@ -427,7 +481,7 @@ export default function Navbar() {
                     to={path}
                     onClick={cerrarMenu}
                     className={({ isActive }) =>
-                      `block w-full py-3 text-xl font-medium transition-colors
+                      `block w-full py-4 text-lg font-semibold transition-colors
                        ${isActive ? 'text-secondary' : 'text-white hover:text-secondary'}`
                     }
                   >
@@ -436,24 +490,26 @@ export default function Navbar() {
                 )}
               </li>
             ))}
-
-            {/* Divisor */}
-            <li className="w-full border-t border-white/15 my-2" />
-
-            {/* CTA Inscripciones — full-width */}
-            <li className="w-full px-4">
-              <Link
-                to="/admisiones"
-                onClick={cerrarMenu}
-                className="block w-full rounded-full bg-secondary py-3.5
-                  text-center text-base font-bold text-white
-                  hover:bg-secondary/90 transition-colors"
-              >
-                Iniciar inscripción
-              </Link>
-            </li>
           </ul>
+
+          {/* CTA Inscripciones — full-width */}
+          <div className="mt-8 w-full max-w-sm mx-auto px-2">
+            <Link
+              to="/admisiones"
+              onClick={cerrarMenu}
+              className="block w-full rounded-full bg-secondary py-4
+                text-center text-base font-bold text-white shadow-lg
+                hover:bg-secondary/90 transition-colors"
+            >
+              Iniciar inscripción
+            </Link>
+          </div>
         </nav>
+
+        {/* Pie del panel */}
+        <p className="relative z-10 pb-6 text-center font-sans text-xs uppercase tracking-[0.25em] text-white/40">
+          Fe · Cultura · Vida
+        </p>
       </div>
     </>
   );

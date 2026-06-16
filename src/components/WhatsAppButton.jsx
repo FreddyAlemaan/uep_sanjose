@@ -37,7 +37,7 @@ export default function WhatsAppButton() {
       aria-label="Escribir al colegio por WhatsApp"
       onMouseEnter={hoverIn}
       onMouseLeave={hoverOut}
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center
+      className="fixed bottom-6 right-6 z-30 flex h-14 w-14 items-center justify-center
         rounded-full bg-[#25D366] shadow-lg shadow-black/20"
     >
       {/* Anillo de pulso */}

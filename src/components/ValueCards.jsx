@@ -3,24 +3,45 @@ import { Link } from 'react-router-dom';
 import { gsap, ScrollTrigger } from '../utils/gsapHelpers';
 import { useSectionTitle } from '../hooks/useScrollAnimation';
 
+/* Íconos en línea — estilo Heroicons outline, sin emojis */
+const IconAcademic = () => (
+  <svg aria-hidden="true" className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3L2 8l10 5 10-5-10-5z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 10.5v4.5c0 1.5 2.5 3 6 3s6-1.5 6-3v-4.5" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M22 8v6" />
+  </svg>
+);
+
+const IconFaith = () => (
+  <svg aria-hidden="true" className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M7.5 8h9" />
+  </svg>
+);
+
+const IconArts = () => (
+  <svg aria-hidden="true" className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 0 1-1.632 2.163l-1.32.377a1.803 1.803 0 1 1-.99-3.467l2.31-.66a2.25 2.25 0 0 0 1.632-2.163Zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 0 1-1.632 2.163l-1.32.377a1.803 1.803 0 0 1-.99-3.467l2.31-.66A2.25 2.25 0 0 0 9 15.553Z" />
+  </svg>
+);
+
 const CARDS = [
   {
-    icon: '🎓',
+    Icon: IconAcademic,
     titulo: 'Formación Técnica Real',
     descripcion: 'Nuestros egresados obtienen título de bachiller con mención técnica, listos para el trabajo y la universidad.',
     link: '/academico',
   },
   {
-    icon: '✝️',
+    Icon: IconFaith,
     titulo: 'Valores y Fe',
     descripcion: 'Una educación evangelizadora y humanista que forma el carácter y el corazón de cada estudiante.',
-    link: '/el-colegio',
+    link: '/colegio',
   },
   {
-    icon: '🎺',
+    Icon: IconArts,
     titulo: 'Cultura y Arte',
     descripcion: 'Nuestra Banda de Música, activa desde 1967, es orgullo de Carayaca y escuela de disciplina y talento.',
-    link: '/vida',
+    link: '/vida-estudiantil',
   },
 ];
 
@@ -72,13 +93,15 @@ export default function ValueCards() {
           ref={cardsRef}
           className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {CARDS.map(({ icon, titulo, descripcion, link }) => (
+          {CARDS.map(({ Icon, titulo, descripcion, link }) => (
             <article
               key={titulo}
               style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
               className="flex flex-col gap-4 rounded-2xl bg-white p-8 cursor-default"
             >
-              <span className="text-4xl" aria-hidden="true">{icon}</span>
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-white">
+                <Icon />
+              </span>
 
               <h3 className="font-display text-xl font-bold text-primary">{titulo}</h3>
 
