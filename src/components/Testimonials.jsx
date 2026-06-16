@@ -6,37 +6,37 @@ const TESTIMONIOS = [
   {
     nombre:     'Carmen Rodríguez',
     año:        'Egresada 2008 · Representante actual',
-    avatar:     'https://placehold.co/80x80/C8972B/FFFFFF?text=CR',
+    avatar:     'https://placehold.co/80x80/D4A937/FFFFFF?text=CR',
     cita:       'Confié en San José para mi educación y ahora confío en ellos para la de mis hijos. Es un colegio que realmente se preocupa por cada familia.',
   },
   {
     nombre:     'José Ángel Martínez',
     año:        'Egresado 2015',
-    avatar:     'https://placehold.co/80x80/1B3A6B/FFFFFF?text=JM',
+    avatar:     'https://placehold.co/80x80/1B4D8C/FFFFFF?text=JM',
     cita:       'La mención en Informática me abrió las puertas a la universidad. Siempre recuerdo a mis profesores con gratitud; me enseñaron más que materias, me enseñaron a pensar.',
   },
   {
     nombre:     'Mariela Fuentes',
     año:        'Representante — 3 hijos en la institución',
-    avatar:     'https://placehold.co/80x80/C8972B/FFFFFF?text=MF',
+    avatar:     'https://placehold.co/80x80/D4A937/FFFFFF?text=MF',
     cita:       'El nivel de atención y compromiso de los docentes no lo he visto en otro colegio. Mis tres hijos han crecido aquí y estoy muy orgullosa de esta comunidad.',
   },
   {
     nombre:     'Andrés Tovar',
     año:        'Egresado 2019',
-    avatar:     'https://placehold.co/80x80/1B3A6B/FFFFFF?text=AT',
+    avatar:     'https://placehold.co/80x80/1B4D8C/FFFFFF?text=AT',
     cita:       'La banda de música fue la experiencia más transformadora de mi vida. Aprendí disciplina, trabajo en equipo y amor por el arte. San José me formó como persona.',
   },
   {
     nombre:     'Lucía Bermúdez',
     año:        'Representante — Preescolar',
-    avatar:     'https://placehold.co/80x80/C8972B/FFFFFF?text=LB',
+    avatar:     'https://placehold.co/80x80/D4A937/FFFFFF?text=LB',
     cita:       'Desde el primer día mi hija se sintió amada y segura. El equipo de preescolar es extraordinario; se nota que disfrutan lo que hacen.',
   },
   {
     nombre:     'Rafael Pérez',
     año:        'Egresado 2011',
-    avatar:     'https://placehold.co/80x80/1B3A6B/FFFFFF?text=RP',
+    avatar:     'https://placehold.co/80x80/1B4D8C/FFFFFF?text=RP',
     cita:       'Carayaca nos une, San José nos forma. Es más que un colegio: es el corazón de nuestra comunidad y estoy feliz de haber crecido entre sus pasillos.',
   },
 ];

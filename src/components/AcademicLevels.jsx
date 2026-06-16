@@ -2,12 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap, ScrollTrigger } from '../utils/gsapHelpers';
 import { useSectionTitle } from '../hooks/useScrollAnimation';
+import imgInicial      from '../assets/nivel-inicial.png';
+import imgBasica       from '../assets/hero-primaria.png';
+import imgBachillerato from '../assets/nivel-bachillerato.png';
 
 const NIVELES = [
   {
     id: 'preescolar',
     label: 'Preescolar',
-    imagen: 'https://placehold.co/560x380/F5F0E8/1B3A6B?text=Preescolar',
+    imagen: imgInicial,
     descripcion:
       'Nuestro nivel preescolar ofrece un ambiente cálido y estimulante para niñas y niños de 3 a 6 años. ' +
       'A través del juego, el arte y la exploración, sentamos las bases cognitivas, emocionales y sociales ' +
@@ -17,7 +20,7 @@ const NIVELES = [
   {
     id: 'basica',
     label: 'Educación Básica',
-    imagen: 'https://placehold.co/560x380/F5F0E8/1B3A6B?text=Educación+Básica',
+    imagen: imgBasica,
     descripcion:
       'Desde 1° hasta 9° grado, brindamos una formación sólida en las áreas fundamentales del conocimiento. ' +
       'Nuestros docentes acompañan el desarrollo integral del estudiante con metodologías activas que ' +
@@ -27,7 +30,7 @@ const NIVELES = [
   {
     id: 'bachillerato',
     label: 'Bachillerato Técnico',
-    imagen: 'https://placehold.co/560x380/F5F0E8/1B3A6B?text=Bachillerato+Técnico',
+    imagen: imgBachillerato,
     descripcion:
       'Nuestro Bachillerato Técnico forma egresados con título medio que les abre las puertas tanto ' +
       'al mundo laboral como a la educación superior. Con menciones en Informática y Agropecuaria, ' +

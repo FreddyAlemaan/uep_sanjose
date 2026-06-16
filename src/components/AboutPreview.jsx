@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap, ScrollTrigger } from '../utils/gsapHelpers';
 import { useSectionTitle } from '../hooks/useScrollAnimation';
+import fachadaImg from '../assets/fachada.png';
 
 const PUNTOS = [
   'Educación integral que une lo académico, lo espiritual y lo humano',
@@ -41,8 +42,8 @@ export default function AboutPreview() {
           <div ref={imageRef} className="relative">
             <div className="overflow-hidden rounded-2xl shadow-xl">
               <img
-                src="https://placehold.co/600x500/F5F0E8/1B3A6B?text=Nuestra+Comunidad"
-                alt="Estudiantes y docentes de la U.E.P. San José"
+                src={fachadaImg}
+                alt="Fachada de la U.E. Parroquial San José de Carayaca"
                 className="w-full h-auto object-cover"
               />
             </div>

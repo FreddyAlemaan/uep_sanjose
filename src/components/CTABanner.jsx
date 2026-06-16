@@ -20,7 +20,7 @@ export default function CTABanner() {
     <section ref={sectionRef} className="relative py-24 overflow-hidden">
       {/* Imagen de fondo */}
       <img
-        src="https://placehold.co/1440x600/0F2347/C8972B?text=Únete+a+la+familia+San+José"
+        src="https://placehold.co/1440x600/102E54/D4A937?text=Únete+a+la+familia+San+José"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover object-center"

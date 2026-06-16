@@ -5,14 +5,14 @@ import { useSectionTitle } from '../hooks/useScrollAnimation';
 
 const NOTICIAS = [
   {
-    imagen:     'https://placehold.co/400x250/1B3A6B/FFFFFF?text=Acto+de+Clausura',
+    imagen:     'https://placehold.co/400x250/1B4D8C/FFFFFF?text=Acto+de+Clausura',
     categoria:  'Eventos',
     titulo:     'Gran acto de clausura y entrega de diplomas del año escolar 2024–2025',
     fecha:      '10 de junio de 2025',
     slug:       'clausura-2025',
   },
   {
-    imagen:     'https://placehold.co/400x250/C8972B/FFFFFF?text=Banda+de+Música',
+    imagen:     'https://placehold.co/400x250/D4A937/FFFFFF?text=Banda+de+Música',
     categoria:  'Cultura',
     titulo:     'La Banda de Música de San José representará al Estado Vargas en festival nacional',
     fecha:      '2 de junio de 2025',

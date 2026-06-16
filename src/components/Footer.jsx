@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logoSrc from '../assets/logo.png';
 
 const AÑO = new Date().getFullYear();
 
@@ -54,12 +55,15 @@ export default function Footer() {
 
           {/* Logo + descripción */}
           <div className="lg:col-span-1">
-            <Link to="/" aria-label="Inicio">
+            <Link to="/" aria-label="Inicio" className="flex items-center gap-3 mb-4">
               <img
-                src="https://placehold.co/140x46/FFFFFF/1B3A6B?text=San+José&font=playfair-display"
-                alt="Logo U.E.P. San José"
-                className="h-10 w-auto object-contain mb-4"
+                src={logoSrc}
+                alt="Escudo U.E. Parroquial San José de Carayaca"
+                className="h-14 w-14 object-contain"
               />
+              <span className="font-display text-base font-bold leading-tight text-white">
+                U.E. Parroquial<br />San José
+              </span>
             </Link>
             <p className="text-sm leading-relaxed">
               Institución educativa parroquial con más de 65 años formando

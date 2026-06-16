@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { gsap } from '../utils/gsapHelpers';
 import { useNavbarScroll } from '../hooks/useNavbarScroll';
+import logoSrc from '../assets/logo.png';
 
 /* ─── Tabla de rutas ─────────────────────────────────────────────────────── */
 const NAV_LINKS = [
@@ -80,27 +81,34 @@ export default function Navbar() {
     return () => ctx.revert();
   }, []);
 
-  /* ─── Transición scroll: GSAP controla fondo, padding y sombra ─────────── */
+  /* ─── Transición scroll: un solo tween sincronizado para todo el navbar ──
+     Fondo, sombra, padding y tamaño del logo cambian juntos con la misma
+     duración y easing, para que el efecto se sienta como una sola pieza
+     en vez de elementos moviéndose a velocidades distintas.            */
   useEffect(() => {
+    const tl = gsap.timeline({ defaults: { duration: 0.3, ease: 'power2.out' } });
+
     if (isScrolled) {
-      gsap.to(navRef.current, {
+      tl.to(navRef.current, {
         backgroundColor: 'rgba(255, 255, 255, 0.97)',
         boxShadow:       '0 2px 20px rgba(0, 0, 0, 0.10)',
         paddingTop:      '12px',
         paddingBottom:   '12px',
-        duration:        0.3,
-        ease:            'power2.out',
-      });
+      }, 0)
+      .to(logoRef.current, { scale: 0.88, transformOrigin: 'left center' }, 0);
     } else {
-      gsap.to(navRef.current, {
-        backgroundColor: 'rgba(255, 255, 255, 0)',
+      tl.to(navRef.current, {
+        /* Tinte navy translúcido — visible desde el primer frame aunque la
+           imagen de fondo del Hero no haya cargado todavía */
+        backgroundColor: 'rgba(27, 77, 140, 0.35)',
         boxShadow:       '0 0px 0px rgba(0, 0, 0, 0)',
         paddingTop:      '20px',
         paddingBottom:   '20px',
-        duration:        0.3,
-        ease:            'power2.out',
-      });
+      }, 0)
+      .to(logoRef.current, { scale: 1, transformOrigin: 'left center' }, 0);
     }
+
+    return () => tl.kill();
   }, [isScrolled]);
 
   /* ─── Bloquear scroll del body cuando el menú móvil está abierto ────────── */
@@ -191,7 +199,7 @@ export default function Navbar() {
   /* ─── Clase dinámica de link según estado scroll ────────────────────────── */
   const linkClass = ({ isActive }) =>
     [
-      'relative text-sm font-medium transition-colors duration-150 py-1 group',
+      'relative text-sm font-medium transition-colors duration-300 ease-out py-1 group',
       isActive
         ? 'text-secondary'
         : isScrolled
@@ -206,33 +214,32 @@ export default function Navbar() {
       <header
         ref={navRef}
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0)',
+          backgroundColor: 'rgba(27, 77, 140, 0.35)',
           paddingTop:      '20px',
           paddingBottom:   '20px',
         }}
-        className="fixed inset-x-0 top-0 z-50"
+        className="fixed inset-x-0 top-0 z-50 backdrop-blur-sm"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
-          {/* Logo */}
-          <Link ref={logoRef} to="/" aria-label="Inicio — U.E.P. San José" className="shrink-0">
+          {/* Logo + nombre del colegio */}
+          <Link
+            ref={logoRef}
+            to="/"
+            aria-label="Inicio — U.E.P. San José"
+            className="flex items-center gap-3 shrink-0"
+          >
             <img
-              src="/assets/logo.png"
-              alt="Logo U.E.P. San José"
-              className="h-11 w-auto object-contain"
-              onError={e => {
-                /* Fallback si la imagen no carga */
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling.style.display = 'block';
-              }}
+              src={logoSrc}
+              alt="Escudo U.E. Parroquial San José de Carayaca"
+              className="h-12 w-12 object-contain drop-shadow-sm"
             />
-            {/* Fallback tipográfico */}
             <span
-              style={{ display: 'none' }}
-              className={`font-display text-lg font-bold leading-tight
+              className={`font-display text-base sm:text-lg font-bold leading-tight
+                transition-colors duration-300 ease-out
                 ${isScrolled ? 'text-primary' : 'text-white'}`}
             >
-              U.E.P. San José
+              U.E. Parroquial<br className="hidden sm:block" />{' '}San José
             </span>
           </Link>
 
@@ -343,16 +350,19 @@ export default function Navbar() {
             <span
               ref={bar1Ref}
               className={`block h-0.5 w-5 rounded-full origin-center
+                transition-colors duration-300 ease-out
                 ${isScrolled || isOpen ? 'bg-primary' : 'bg-white'}`}
             />
             <span
               ref={bar2Ref}
               className={`block h-0.5 w-5 rounded-full
+                transition-colors duration-300 ease-out
                 ${isScrolled || isOpen ? 'bg-primary' : 'bg-white'}`}
             />
             <span
               ref={bar3Ref}
               className={`block h-0.5 w-5 rounded-full origin-center
+                transition-colors duration-300 ease-out
                 ${isScrolled || isOpen ? 'bg-primary' : 'bg-white'}`}
             />
           </button>

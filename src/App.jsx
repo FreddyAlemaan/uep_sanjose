@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar    from './components/Navbar';
-import Footer    from './components/Footer';
-import Home      from './pages/Home';
-import About     from './pages/About';
+import Navbar         from './components/Navbar';
+import Footer         from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
+import Home       from './pages/Home';
+import About      from './pages/About';
 import Admissions from './pages/Admissions';
-import Contact   from './pages/Contact';
+import Contact    from './pages/Contact';
 
 /* Páginas pendientes — stub temporal hasta que se desarrollen */
 const Placeholder = ({ titulo }) => (
@@ -35,6 +36,7 @@ export default function App() {
       </div>
 
       <Footer />
+      <WhatsAppButton />
     </BrowserRouter>
   );
 }
